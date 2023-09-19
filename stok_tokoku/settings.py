@@ -55,7 +55,7 @@ ROOT_URLCONF = 'stok_tokoku.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], #tambahan supaya base.html terdeteksi sebagai template
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

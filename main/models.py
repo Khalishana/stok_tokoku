@@ -6,4 +6,4 @@ class Item(models.Model):
     #date_added = models.DateField(auto_now_add=True) #add tanggal sekarang
     amount = models.IntegerField() #menyimpan bilangan bulat
     description = models.TextField() #buat teks dengan panjang variabel
-    #date_added = models.DateField(auto_now_add=True) #add tanggal sekarang
+    date_added = models.DateField(auto_now_add=True) #add tanggal sekarang

@@ -1,8 +1,42 @@
-<h1>Laman StokNya Aku</h1>
+{% extends 'base.html' %}
 
-<h3>Nama Stok Barang yang Telah Disimpan: </h3>
-<p>{{ name }}</p> <!-- memanggil name -->
-<h3>Banyak Barang yang Ingin Kau Simpan: </h3>
-<p>{{ amount }}</p> <!-- memanggil amount -->
-<h4>Get To Know about StokNya Aku</h4>
-<p>{{ description }}</p> <!-- memanggil description -->
+{% block content %}
+    <h1>Laman StokNya Aku</h1>
+
+    <h3>Nama Stok Barang yang Telah Disimpan: </h3>
+    <p>{{ name }}</p> <!-- memanggil name -->
+
+    <h3>Banyak Barang yang Ingin Kau Simpan: </h3>
+    <p>{{ amount }}</p> <!-- memanggil amount -->
+
+    <h4>Get To Know about StokNya Aku</h4>
+    <p>{{ description }}</p> <!-- memanggil description -->
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Date Added</th>
+        </tr>
+    
+        {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini {% endcomment %}
+    
+        {% for product in products %}
+            <tr>
+                <td>{{product.name}}</td>
+                <td>{{product.amount}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.date_added}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <h3>Hore!!🥳 Kamu menyimpan {{product_count}} item pada aplikasi StokNya Aku. Stok yang kamu miliki berhasil di update!! </h3>
+    <br />
+    
+    <a href="{% url 'main:create_product' %}">
+        <button>
+            Tambah Isi Stok
+        </button>
+    </a>
+{% endblock content %}

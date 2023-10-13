@@ -12,6 +12,9 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.shortcuts import get_object_or_404 #buat cegah error pas mau ngambil/nambah amount dari database
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseNotFound
+from django.http import JsonResponse
 
 from main.models import Item
 
@@ -121,3 +124,34 @@ def delete_item(request, id): #fungsi delete item
         product.delete()
         #return HttpResponse(reverse('main:show_main'))
         return redirect('main:show_main')
+    
+#buat nampilin data produk pake fetch di html
+def get_product_json(request):
+    product_item = Item.objects.all()
+    return HttpResponse(serializers.serialize('json', product_item))
+
+@csrf_exempt
+def create_product_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        amount = request.POST.get("amount")
+        description = request.POST.get("description")
+        date_added = request.POST.get("date_added")
+        user = request.user
+
+        new_product = Item(name=name, amount=amount, description=description, date_added=date_added,user=user)
+        new_product.save()
+
+        data ={
+            'id': new_product.id,
+            'name': new_product.name,
+            'amount': new_product.amount,
+            'description': new_product.description,
+            'date_added': date_added,
+            'success': True
+        }
+
+        #return HttpResponse(b"CREATED", status=201) #nandain permintaan AJAX POST berhasil
+        return JsonResponse(data, status=201)
+
+    return HttpResponseNotFound()

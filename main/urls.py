@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id, register, login_user, logout_user, tambah_amount, kurangi_amount, delete_item, get_product_json, create_product_ajax
+from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id, register, login_user, logout_user, tambah_amount, kurangi_amount, delete_item, get_product_json, create_product_ajax, create_product_flutter
 
 app_name = 'main'
 
@@ -17,5 +17,6 @@ urlpatterns = [
     path('kurangi_amount/<int:id>/', kurangi_amount, name='kurangi_amount'),
     path('delete_item/<int:id>/', delete_item, name='delete_item'),
     path('get-product/', get_product_json, name='get_product_json'),
-    path('create-ajax/', create_product_ajax, name='create_product_ajax')
+    path('create-ajax/', create_product_ajax, name='create_product_ajax'),
+    path('create-flutter/', create_product_flutter, name='create_product_flutter'),
 ]

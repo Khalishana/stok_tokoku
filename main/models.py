@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Item(models.Model):
@@ -7,3 +8,4 @@ class Item(models.Model):
     amount = models.IntegerField() #menyimpan bilangan bulat
     description = models.TextField() #buat teks dengan panjang variabel
     date_added = models.DateField(auto_now_add=True) #add tanggal sekarang
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,76 +1,103 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="page-container" style="background-color: lightskyblue; padding: 20px; margin-top: -10px; margin-right: -10px; margin-left: -10px; margin-bottom: -10px;">
-    <h1>Laman StokNya Aku</h1>
+  <!-- Mulai code buat navbar -->
+  <!-- mulai css custom warna navbar -->  
+  <head>
+      <style>
+        .custom-navbar {
+            background-color: #a2d2ff;
+        }
+      </style>
+    </head>
+  <!-- akhir css custom navbar -->
 
-    <h2>Halo, {{name}}! Silakan baca keterangan dibawah untuk mulai menggunakan app StokNya Aku</h2>
+    <!-- <nav class="navbar bg-dark border-bottom border-bottom-dark navbar-dark" data-bs-theme="light"> -->
+      <nav class="navbar border-bottom border-bottom-dark navbar-dark custom-navbar" data-bs-theme="light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">StokNya Aku</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link" aria-current="page" href="#">Home</a>
+              <a class="nav-link" href="#">Fitur & Cara Penggunaan</a>
+              <a class="nav-link" href="#">Detail Produk Simpanan</a>
+              <a class="nav-link" href="{% url 'main:logout' %}">Logout</a> <!-- aria-disabled="true" -->
+            </div>
+          </div>
+        </div>
+      </nav>
+    <!-- akhir kodingan navbar -->
 
-    <h3>🌟 Ketentuan menyimpan banyaknya barang</h3>
+    <!-- bikin warna background -->
+  <head>
+    <style>
+        body{background-color: #ffafcc;}
+        /* supaya judulnya di center */
+        .center-text {
+        text-align: center;
+    }
+    </style>
+  </head>
+
+    <!-- <h1>Laman StokNya Aku</h1> -->
+  <div class="center-text">
+    <h1>Halo, {{name}}!</h1>
+    <h3>Silakan baca keterangan dibawah untuk mulai menggunakan app StokNya Aku</h3>
+  </div>
+
+    <h4>🌟 Ketentuan menyimpan banyaknya barang</h4>
     <p>{{ amount }}</p> <!-- memanggil amount -->
 
     <h4>Get To Know about StokNya Aku</h4>
     <p>{{ description }}</p> <!-- memanggil description -->
 
-    <table border="2" style="background-color: beige;">
-        <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Description</th>
-            <th>Date Added</th>
-            <th colspan="3" style="text-align: center;">Fitur</th> <!-- pake colspan boar judulnya mencakup ke tiga kolom -->
-        </tr>
-    
-        {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini {% endcomment %}
-    
-        {% for product in products %}
-            <tr>
-                <td style="text-align: center;">{{product.name}}</td>
-                <td style="text-align: center;">{{product.amount}}</td>
-                <td>{{product.description}}</td>
-                <td>{{product.date_added}}</td>
-                <!-- mulai tambahin button buat tambah dan kurangi amount item -->
-                <td style="text-align: center;">
-                    <form method="post" action="{% url 'main:tambah_amount' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" style="background-color: lightgreen;">Tambah Amount</button>
-                    </form>
-                </td>
-                <td style="text-align: center;">
-                    <form method="post" action="{% url 'main:kurangi_amount' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" style="background-color: lightcoral;">Kurangi Amount</button>
-                    </form>
-                </td>
-                <!-- mulai coba bikin tombol buat delete-->
-                <!-- <td><a href="delete/{{product.id}}">Hapus Item</a></td> -->
-                <td style="text-align: center;">
-                    <form method="post" action="{% url 'main:delete_item' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" style="background-color: rgb(233, 233, 112);">Hapus Produk</button>
-                    </form>
-                </td>
-                <!-- akhir bikin tombol buat delete -->
-                <!-- https://www.w3schools.com/django/django_delete_record.php -->
-            </tr>
-        {% endfor %}
-    </table>
-    <h3>Hore!!🥳 Kamu menyimpan {{product_count}} item pada aplikasi StokNya Aku. Stok yang {{name}} miliki berhasil di update!! </h3>
-    <br />
-    
-    <a href="{% url 'main:create_product' %}">
-        <button>
-            Tambah Isi Stok
-        </button>
-    </a>
+    <!-- code CSS buat kasih warna di card -->
+    <style> 
+      .custom-card {
+          background-color: #cdb4db;
+      }
+  </style>
 
-    <!-- ini bikin tombol logout di laman utama -->
-    <a href="{% url 'main:logout' %}">
-        <button>
-            Logout
-        </button>
-    </a>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4 mb-4 mx-auto">
+                <div class="card mb-4 custom-card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text">Amount: {{ product.amount }}</p>
+                        <p class="card-text">Date Added: {{ product.date_added }}</p>
+                        <!-- mulai div biar button bsia ke samping -->
+                        <div class="d-flex justify-content-between">
+                        <form method="post" action="{% url 'main:tambah_amount' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Tambah Amount</button>
+                        </form>
+                        <form method="post" action="{% url 'main:kurangi_amount' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Kurangi Amount</button>
+                        </form>
+                        <form method="post" action="{% url 'main:delete_item' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning btn-sm">Hapus Produk</button>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- akhir code bikin card -->
+
+    <h5>Hore!!🥳 Kamu menyimpan {{product_count}} item pada aplikasi StokNya Aku. Stok yang {{name}} miliki berhasil di update!! </h5>
+    <br />
+
+    <a class="btn btn-primary btn-sm" href="{% url 'main:create_product' %}" role="button">Tambah Isi Stok</a>
 
     <h5>Sesi terakhir login: {{ last_login }}</h5>
-</div>
+
+<!-- </div> -->
 {% endblock content %}

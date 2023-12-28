@@ -70,24 +70,24 @@
                         <p class="card-text">{{ product.description }}</p>
                         <p class="card-text">Amount: {{ product.amount }}</p>
                         <p class="card-text">Date Added: {{ product.date_added }}</p>
-                        <!-- mulai div biar button bsia ke samping -->
+                        <!-- <! mulai div biar button bsia ke samping --> 
                         <div class="d-flex justify-content-between">
-                        <form method="post" action="{% url 'main:tambah_amount' product.id %}">
+                        <form method="post" action="{% url 'main:tambah_amount' product.id %}"> 
                             {% csrf_token %}
                             <button type="submit" class="btn btn-success btn-sm">Tambah Amount</button>
                         </form>
-                        <form method="post" action="{% url 'main:kurangi_amount' product.id %}">
+                        <form method="post" action="{% url 'main:kurangi_amount' product.id %}"> 
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm">Kurangi Amount</button>
                         </form>
-                        <form method="post" action="{% url 'main:delete_item' product.id %}">
+                        <form method="post" action="{% url 'main:delete_item' product.id %}"> 
                             {% csrf_token %}
                             <button type="submit" class="btn btn-warning btn-sm">Hapus Produk</button>
                         </form>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         {% endfor %}
     </div>
     <!-- akhir code bikin card -->
@@ -95,9 +95,119 @@
     <h5>Hore!!🥳 Kamu menyimpan {{product_count}} item pada aplikasi StokNya Aku. Stok yang {{name}} miliki berhasil di update!! </h5>
     <br />
 
+    <!-- coba model buat card -->
+        <div id="product_cards" class="row">
+        </div>
+    <!-- akir coba model -->
+
+    <!-- modal buat meng pop up pas tombol dipencet -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form" onsubmit="return false;"> <!-- stop submit formulir -->
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name"></input>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="col-form-label">Amount:</label>
+                            <input type="number" class="form-control" id="amount" name="amount"></input>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="description" name="description"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <!-- iya bnr buat nambah keknya soalnya ada close -->
+                    <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- akhir yg kyknya buat pop up minta nambah -->
+
+    <!-- ini ajax with event driven programming -->
+    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Tambah Isi Stok by AJAX</button>
+    <!-- ini batas ajax-->
+    
     <a class="btn btn-primary btn-sm" href="{% url 'main:create_product' %}" role="button">Tambah Isi Stok</a>
 
     <h5>Sesi terakhir login: {{ last_login }}</h5>
+  
+    <script>
+        document.getElementById("form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        addProduct();
+    });
 
-<!-- </div> -->
+
+        //mulai fungsi getProducts
+        async function getProducts(){
+            return fetch("{% url 'main:get_product_json' %}").then((res) => res.json())
+        }
+
+    // Fungsi untuk memperbarui daftar produk
+    async function refreshProducts() {
+        const products = await getProducts();
+        const cardContainer = document.getElementById("product_cards");
+
+        // Hapus semua card yang ada saat ini
+        cardContainer.innerHTML = "";
+
+        // Tambahkan ulang semua card berdasarkan data produk yang diambil dari server
+        products.forEach((product) => {
+            addProductCard(product);
+        });
+    }
+
+    //refreshProducts()
+
+    function addProductCard(product) {
+    const cardContainer = document.getElementById("product_cards");
+    const card = document.createElement("div");
+    card.classList.add("col-md-4", "mb-4", "mx-auto");
+    card.innerHTML = `
+        <div class="card mb-4 custom-card">
+            <div class="card-body">
+                <h5 class="card-title text-center">${product.fields.name}</h5>
+                <p class="card-text">${product.fields.description}</p>
+                <p class="card-text">Amount: ${product.fields.amount}</p>
+                <p class="card-text">Date Added: ${product.fields.date_added}</p>
+                <!-- Add buttons and forms here -->
+            </div>
+        </div>
+    `;
+    cardContainer.appendChild(card);
+}
+
+function addProduct() {
+    const formData = new FormData(document.querySelector('#form'));
+    fetch("/create-ajax/", { 
+        method: "POST",
+        body: formData,
+    })
+
+    .then((response) => response.json())
+    .then((data) => {
+        // Tambahkan card setelah berhasil menambahkan produk dengan AJAX
+        addProductCard(data); 
+
+        // Panggil fungsi refreshProducts untuk memperbarui daftar produk secara asinkron
+        refreshProducts();
+    })
+
+    document.getElementById("form").reset()
+    return false
+}
+
+    document.getElementById("button_add").onclick = addProduct
+    </script>
 {% endblock content %}
